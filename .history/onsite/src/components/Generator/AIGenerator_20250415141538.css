@@ -1,0 +1,140 @@
+.ai-generator {
+  width: 100%;
+  max-width: 1200px; /* Increased from 1000px to align closer to home-main's 1440px */
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.generator-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+.generator-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center; /* Ensure h3 remains centered */
+}
+
+.prompt-container {
+  margin-bottom: 1.5rem;
+  width: 100%; /* Ensure it takes full container width */
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 0.5rem;
+  width: 100%; /* Ensure it scales with parent */
+}
+
+.prompt-input {
+  width: 100%;
+  min-height: 80px;
+  padding: 1rem 1.5rem;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  resize: none;
+}
+
+.prompt-input:focus {
+  outline: none;
+}
+
+.prompt-input::placeholder {
+  color: #888;
+}
+
+.send-button {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.send-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.send-button:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.paper-plane {
+  width: 24px;
+  height: 24px;
+  color: #4a90e2;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #4a90e2;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error-message {
+  color: #ff5555;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: center; /* Center error message for better visibility */
+}
+
+.hint-text {
+  font-size: 0.85rem;
+  color: #aaaaaa;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .ai-generator {
+    max-width: 90%; /* Fluid width for smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-generator {
+    padding: 1rem;
+  }
+
+  .generator-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .prompt-input {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+}

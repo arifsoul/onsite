@@ -1,0 +1,22 @@
+.editor-page {
+    padding: 20px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .editor-section,
+  .preview-section {
+    height: 80vh;
+    overflow-y: auto;
+  }

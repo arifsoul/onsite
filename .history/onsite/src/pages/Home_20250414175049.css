@@ -1,0 +1,78 @@
+/* Layout Container */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100%; /* Changed from width: 100vw to avoid overflow */
+    background: transparent;
+  }
+  
+  /* Main Content */
+  .home-main {
+    padding: 100px 3rem 3rem; /* Increased horizontal padding from 2rem to 3rem */
+    max-width: 1400px; /* Added max-width to constrain content */
+    margin: 0 auto; /* Center the main content */
+  }
+  
+  /* Hero Section */
+  .hero-section {
+    text-align: center;
+    padding: 8rem 2rem;
+    background: linear-gradient(135deg, #2e2a4d, #413a6b);
+    border-radius: 20px;
+    margin-bottom: 5rem;
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 1s ease-in-out;
+    max-width: 1200px; /* Constrain width */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Description Section */
+  .description-section {
+    padding: 4rem;
+    background: rgba(31, 28, 44, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 5rem;
+    color: #f0f0f0;
+    animation: fadeInUp 1s ease-in-out;
+    max-width: 1200px; /* Constrain width */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Code Playground */
+  .code-playground {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    padding: 4rem;
+    background: rgba(31, 28, 44, 0.75);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-bottom: 5rem;
+    max-width: 1200px; /* Constrain width */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .home-main {
+      padding: 100px 1.5rem 3rem; /* Slightly reduced padding for smaller screens */
+    }
+  
+    .hero-section {
+      padding: 6rem 1.5rem; /* Adjusted padding */
+    }
+  
+    .description-section {
+      padding: 2.5rem; /* Adjusted padding */
+    }
+  
+    .code-playground {
+      padding: 2.5rem; /* Adjusted padding */
+    }
+  }

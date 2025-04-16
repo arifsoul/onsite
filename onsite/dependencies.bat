@@ -1,0 +1,1 @@
+npm install @auth0/auth0-react axios react-router-dom react-draggable styled-components react-icons
