@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Pricing from './pages/Pricing';
 import Docs from './pages/Docs';
 import Contact from './pages/Contact';
+import AIGenerator from './components/Generator/AIGenerator';
+import LivePreview from './components/Preview/LivePreview';
 import './App.css';
 
 function App() {
@@ -14,7 +16,10 @@ function App() {
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-      redirectUri={window.location.origin}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        // Add other params if needed, e.g., audience, scope
+      }}
     >
       <CodeProvider>
         <Router>
@@ -25,6 +30,8 @@ function App() {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/docs" element={<Docs />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/aigenerator" element={<AIGenerator />} />
+            <Route path="/livepreview" element={<LivePreview />} />
           </Routes>
         </Router>
       </CodeProvider>

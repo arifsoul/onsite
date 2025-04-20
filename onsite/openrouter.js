@@ -1,35 +1,51 @@
 import OpenAI from 'openai';
+import dotenv from 'dotenv';
 
+// Memuat variabel lingkungan dari file .env
+dotenv.config();
+
+// Mengambil API key dan informasi lainnya dari .env
+const apiKey = process.env.VITE_OPENROUTER_API_KEY;
+const siteUrl = process.env.YOUR_SITE_URL;
+const siteName = process.env.YOUR_SITE_NAME;
+
+// Memeriksa apakah API key tersedia
+if (!apiKey) {
+  console.error('OPENROUTER_API_KEY tidak ditemukan di file .env');
+  process.exit(1);
+}
+
+// Inisialisasi OpenAI client
 const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: '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',
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: apiKey,
   defaultHeaders: {
-    'HTTP-Referer': 'http://your-site.com',
-    'X-Title': 'Your Site Name',
+    "HTTP-Referer": siteUrl || "http://localhost", // Default ke localhost jika tidak ada
+    "X-Title": siteName || "My App", // Default ke "My App" jika tidak ada
   },
 });
 
 async function main() {
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'deepseek/deepseek-r1', // Verify this model is supported
+    // Membuat request dengan streaming
+    const stream = await openai.chat.completions.create({
+      model: "deepseek/deepseek-r1:free",
       messages: [
         {
-          role: 'system',
-          content:
-            'You are an AI that generates React component code based on user descriptions. Return structured JSON with fields: html, css, js, and components array. Example: ```json\n{"html": "<div>...</div>", "css": ".class {...}", "js": "function ...", "components": []}\n```',
-        },
-        { role: 'user', content: "create simple website" },
+          "role": "user",
+          "content": "What is the meaning of life?"
+        }
       ],
+      stream: true, // Mengaktifkan streaming
     });
-    console.log('Full completion:', completion);
-    if (completion.choices && completion.choices.length > 0) {
-      console.log(completion.choices[0].message);
-    } else {
-      console.log('No choices returned in response');
+
+    // Menangani respons stream
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || '';
+      process.stdout.write(content); // Menampilkan output secara bertahap
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error:', error);
   }
 }
 

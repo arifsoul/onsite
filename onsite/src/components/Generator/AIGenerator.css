@@ -1,13 +1,24 @@
+/* Root variables for theming */
+:root {
+  --primary-color: #4a90e2;
+  --text-color: #e0e0e0;
+  --error-color: #ff5555;
+  --bg-dark: #1e1e1e;
+  --input-bg: #2d2d2d;
+}
+
+/* Main container */
 .ai-generator {
   width: 100%;
-  max-width: 1200px; /* Increased from 1000px to align closer to home-main's 1440px */
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem;
-  background: #1e1e1e;
+  background: var(--bg-dark);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Header styles */
 .generator-header {
   display: flex;
   align-items: center;
@@ -24,23 +35,24 @@
 .generator-header h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #ffffff;
-  text-align: center; /* Ensure h3 remains centered */
+  color: var(--text-color);
+  text-align: center;
 }
 
+/* Prompt container */
 .prompt-container {
   margin-bottom: 1.5rem;
-  width: 100%; /* Ensure it takes full container width */
+  width: 100%;
 }
 
 .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  background: #2d2d2d;
+  background: var(--input-bg);
   border-radius: 8px;
   padding: 0.5rem;
-  width: 100%; /* Ensure it scales with parent */
+  width: 100%;
 }
 
 .prompt-input {
@@ -50,12 +62,12 @@
   border: none;
   background: transparent;
   font-size: 1.1rem;
-  color: #e0e0e0;
+  color: var(--text-color);
   resize: none;
 }
 
 .prompt-input:focus {
-  outline: none;
+  outline: 2px solid var(--primary-color);
 }
 
 .prompt-input::placeholder {
@@ -71,6 +83,7 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.2s ease;
+  will-change: transform;
 }
 
 .send-button:disabled {
@@ -78,30 +91,37 @@
   opacity: 0.5;
 }
 
-.send-button:hover:not(:disabled) {
+.send-button:hover:not(:disabled),
+.send-button:focus:not(:disabled) {
   transform: scale(1.1);
+  outline: 2px solid var(--primary-color);
 }
 
-.paper-plane {
+.paper-plane,
+.stop-icon {
   width: 24px;
   height: 24px;
-  color: #4a90e2;
+  color: var(--primary-color);
+}
+
+.stop-icon {
+  stroke: var(--error-color);
 }
 
 .spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid #4a90e2;
+  border: 3px solid var(--primary-color);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .error-message {
-  color: #ff5555;
+  color: var(--error-color);
   font-size: 0.9rem;
   margin-top: 0.5rem;
-  text-align: center; /* Center error message for better visibility */
+  text-align: center;
 }
 
 .hint-text {
@@ -109,6 +129,25 @@
   color: #aaaaaa;
   text-align: center;
   margin-top: 1rem;
+}
+
+.streaming-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.streaming-toggle input[type="checkbox"] {
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.streaming-toggle input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 @keyframes spin {
@@ -120,7 +159,7 @@
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .ai-generator {
-    max-width: 90%; /* Fluid width for smaller screens */
+    max-width: 90%;
   }
 }
 
@@ -136,5 +175,20 @@
   .prompt-input {
     font-size: 1rem;
     padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .ai-generator {
+    padding: 0.75rem;
+  }
+
+  .generator-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .prompt-input {
+    min-height: 60px;
+    font-size: 0.9rem;
   }
 }

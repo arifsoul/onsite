@@ -1,150 +1,224 @@
+/* CSS Reset for NavMenu to avoid conflicts with AI-generated styles */
+.nav-container * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary: #5b9aff;
+  --gray1: #e0e0e0;
+  --gray2: #a0a0a0;
+  --bg-dark: #121212;
+}
+
+.nav-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Main navigation menu */
 .nav-menu {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-  
-  .nav-logo h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--gray1);
-    margin: 0;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0;
+  position: relative;
+  z-index: 1000;
+  background: var(--bg-dark);
+}
+
+.nav-menu .nav-logo {
+  margin-left: 0;
+}
+
+.nav-menu .nav-logo h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray1);
+  margin: 0;
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li {
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: var(--gray2);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.nav-menu a:hover {
+  color: var(--primary);
+}
+
+.nav-menu .nav-login {
+  margin-left: 0;
+}
+
+/* Hamburger styles */
+.nav-menu .hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.nav-menu .hamburger-icon,
+.nav-menu .hamburger-icon::before,
+.nav-menu .hamburger-icon::after {
+  width: 24px;
+  height: 3px;
+  background: var(--gray2);
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.nav-menu .hamburger-icon {
+  position: relative;
+}
+
+.nav-menu .hamburger-icon::before,
+.nav-menu .hamburger-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.nav-menu .hamburger-icon::before {
+  top: -8px;
+}
+
+.nav-menu .hamburger-icon::after {
+  bottom: -8px;
+}
+
+.nav-menu.open .hamburger-icon {
+  background: transparent;
+}
+
+.nav-menu.open .hamburger-icon::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.nav-menu.open .hamburger-icon::after {
+  transform: rotate(-45deg);
+  bottom: 0;
+}
+
+/* Desktop spacing */
+@media (min-width: 769px) {
   .nav-menu ul {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0;
+    margin-right: 0;
   }
-  
-  .nav-menu li {
-    display: flex;
-    align-items: center;
-  }
-  
-  .nav-menu a {
-    text-decoration: none;
-    color: var(--gray2);
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: color 0.2s ease;
-  }
-  
-  .nav-menu a:hover {
-    color: var(--primary);
-  }
-  
-  .nav-login {
-    margin-left: 1rem;
-  }
-  
-  /* Hamburger styles */
-  .hamburger {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-  }
-  
-  .hamburger-icon,
-  .hamburger-icon::before,
-  .hamburger-icon::after {
-    width: 24px;
-    height: 3px;
-    background: var(--gray2);
-    display: block;
-    transition: all 0.3s ease;
-  }
-  
-  .hamburger-icon {
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .nav-menu {
+    justify-content: center;
     position: relative;
   }
-  
-  .hamburger-icon::before,
-  .hamburger-icon::after {
-    content: '';
+
+  .nav-menu .nav-logo {
+    margin-left: 0;
+  }
+
+  .nav-menu .hamburger {
+    display: block;
     position: absolute;
-    left: 0;
+    top: 1rem;
+    right: 0;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    transition: opacity 0.3s ease;
   }
-  
-  .hamburger-icon::before {
-    top: -8px;
+
+  .nav-menu ul {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 4rem;
+    right: 1rem;
+    width: 100%;
+    max-width: 300px;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 2rem 1.5rem;
+    border-radius: 8px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
   }
-  
-  .hamburger-icon::after {
-    bottom: -8px;
+
+  .nav-menu ul.open {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .nav-menu.open .hamburger-icon {
-    background: transparent;
+
+  .nav-menu .close-menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--gray2);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    z-index: 1001;
+    transition: color 0.2s ease;
   }
-  
-  .nav-menu.open .hamburger-icon::before {
-    transform: rotate(45deg);
-    top: 0;
+
+  .nav-menu .close-menu:hover {
+    color: var(--primary);
   }
-  
-  .nav-menu.open .hamburger-icon::after {
-    transform: rotate(-45deg);
-    bottom: 0;
+
+  .nav-menu li {
+    padding: 0.75rem 0;
+    justify-content: center;
   }
-  
-  /* Mobile styles */
-  @media (max-width: 768px) {
-    .nav-menu {
-      position: relative;
-      flex-wrap: wrap;
-    }
-  
-    .nav-logo {
-      flex: 1;
-    }
-  
-    .hamburger {
-      display: block;
-      z-index: 1001;
-    }
-  
-    .nav-menu ul {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      padding: 1rem;
-      border-bottom: 1px solid var(--normal-border);
-      z-index: 1000;
-    }
-  
-    .nav-menu ul.open {
-      display: flex;
-    }
-  
-    .nav-menu li {
-      padding: 0.75rem 0;
-      justify-content: center;
-    }
-  
-    .nav-menu a {
-      font-size: 1rem;
-    }
-  
-    .nav-login {
-      margin-left: 0;
-      width: 100%;
-      justify-content: center;
-    }
+
+  .nav-menu a {
+    font-size: 1rem;
   }
-  
-  /* Ensure header compatibility */
-  @media (max-width: 768px) {
-    .home-header {
-      position: relative;
-    }
+
+  .nav-menu .nav-login {
+    width: 100%;
+    justify-content: center;
   }
+}
+
+/* Header compatibility */
+@media (max-width: 768px) {
+  .home-header {
+    position: relative;
+  }
+}

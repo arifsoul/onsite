@@ -11,25 +11,50 @@ const NavMenu = () => {
   };
 
   return (
-    <nav className="nav-menu">
-      <div className="nav-logo">
-        <Link to="/" onClick={() => setIsOpen(false)}>
-          <h1>Onsite</h1>
-        </Link>
-      </div>
-      <button className="hamburger" onClick={toggleMenu} aria-label="Toggle menu">
-        <span className="hamburger-icon"></span>
-      </button>
-      <ul className={isOpen ? 'open' : ''}>
-        <li><Link to="/" onClick={() => setIsOpen(false)}>Home</Link></li>
-        <li><Link to="/pricing" onClick={() => setIsOpen(false)}>Pricing</Link></li>
-        <li><Link to="/docs" onClick={() => setIsOpen(false)}>Docs</Link></li>
-        <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
-        <li className="nav-login">
-          <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
-        </li>
-      </ul>
-    </nav>
+    <div className="nav-container">
+      <nav className={`nav-menu ${isOpen ? 'open' : ''}`}>
+        <div className="nav-logo">
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            <h1>Onsite</h1>
+          </Link>
+        </div>
+        <button className="hamburger" onClick={toggleMenu} aria-label={isOpen ? 'Close menu' : 'Open menu'}>
+          <span className="hamburger-icon"></span>
+        </button>
+        <ul className={isOpen ? 'open' : ''}>
+          {isOpen && (
+            <button className="close-menu" onClick={toggleMenu} aria-label="Close menu">
+              ×
+            </button>
+          )}
+          <li>
+            <Link to="/" onClick={() => setIsOpen(false)}>
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/pricing" onClick={() => setIsOpen(false)}>
+              Pricing
+            </Link>
+          </li>
+          <li>
+            <Link to="/docs" onClick={() => setIsOpen(false)}>
+              Docs
+            </Link>
+          </li>
+          <li>
+            <Link to="/contact" onClick={() => setIsOpen(false)}>
+              Contact
+            </Link>
+          </li>
+          <li className="nav-login">
+            <Link to="/login" onClick={() => setIsOpen(false)}>
+              Login
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </div>
   );
 };
 
