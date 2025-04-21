@@ -4,6 +4,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { javascript } from '@codemirror/lang-javascript';
+import { ViewPlugin } from '@codemirror/view';
 import './LivePreview.css';
 
 // Initial content with elegant dark theme and interactive animations
@@ -147,10 +148,26 @@ const decodeEscapedText = (text) => {
   return decoded;
 };
 
+// CodeMirror auto-scroll plugin
+const autoScrollPlugin = ViewPlugin.fromClass(
+  class {
+    constructor(view) {
+      this.view = view;
+    }
+
+    update(update) {
+      if (update.docChanged) {
+        const editor = this.view.dom;
+        editor.scrollTop = editor.scrollHeight;
+      }
+    }
+  }
+);
+
 const LivePreview = () => {
   const { generatedCode, setGeneratedCode } = useCode();
   const [activeCodeTab, setActiveCodeTab] = useState('html');
-  const [isCodeVisible, setIsCodeVisible] = useState(true);
+  const [isCodeVisible, setIsCodeVisible] = useState(false);
   const [localCode, setLocalCode] = useState({
     html: initialHtml,
     css: initialCss,
@@ -166,7 +183,7 @@ const LivePreview = () => {
     }
   }, [localCode.reasoning]);
 
-  // Sync localCode with generatedCode and handle streaming updates
+  // Sync localCode with generatedCode and process AI response
   useEffect(() => {
     if (!generatedCode) return;
 
@@ -179,83 +196,82 @@ const LivePreview = () => {
     // Remove ANSI escape codes and decode text
     displayReasoning = decodeEscapedText(displayReasoning.replace(/\x1B\[[0-9;]*m/g, '').trim());
 
-    const jsonStartIndex = generatedCode.reasoning ? generatedCode.reasoning.indexOf('```json') : -1;
-    if (jsonStartIndex !== -1) {
+    // Log AI-generated content
+    console.group('AI-Generated Update');
+    if (generatedCode.html) console.log('Generated HTML:', generatedCode.html);
+    if (generatedCode.css) console.log('Generated CSS:', generatedCode.css);
+    if (generatedCode.js) console.log('Generated JS:', generatedCode.js);
+    if (generatedCode.reasoning) console.log('Raw Reasoning:', displayReasoning);
+    console.groupEnd();
+
+    // Detect ```json block
+    const jsonBlockRegex = /```json\n([\s\S]*?)(?:\n```|$)/;
+    const jsonMatch = generatedCode.reasoning && generatedCode.reasoning.match(jsonBlockRegex);
+    if (jsonMatch) {
       setIsCodeVisible(true);
-      try {
-        const jsonContentRaw = generatedCode.reasoning.slice(jsonStartIndex + 7).trim();
-        // Extract reasoning text before JSON
-        displayReasoning = decodeEscapedText(
-          generatedCode.reasoning
-            .slice(0, jsonStartIndex)
-            .replace(/\x1B$$ [0-9;]*m/g, '')
-            .replace(/<\/?think>/g, '')
-            .trim()
-        );
-        newLocalCode.reasoning = displayReasoning;
+      const jsonContentRaw = jsonMatch[1].trim();
+      console.log('Detected JSON block:', jsonContentRaw);
 
-        // Clean JSON content
-        const cleanedJson = decodeEscapedText(
-          jsonContentRaw
-            .replace(/\x1B\[[0-9;]*m/g, '')
-            .replace(/,\s*}$/, '}')
-            .replace(/,\s* $$/, ']')
-        );
+      // Extract reasoning text outside JSON block
+      displayReasoning = decodeEscapedText(
+        generatedCode.reasoning
+          .replace(jsonBlockRegex, '')
+          .replace(/\x1B\[[0-9;]*m/g, '')
+          .replace(/<\/?think>/g, '')
+          .trim()
+      );
+      newLocalCode.reasoning = displayReasoning;
 
-        let jsonContent;
-        try {
-          jsonContent = JSON.parse(cleanedJson);
-        } catch (e) {
-          try {
-            jsonContent = JSON.parse(`{${cleanedJson}}`);
-          } catch (e2) {
-            const partialJson = {};
-            const keyValueMatches = cleanedJson.match(/"([^"]+)":\s*"(.*?)(?:"(?:,|\n|$)|$)/g) || [];
-            keyValueMatches.forEach((match) => {
-              const [, key, value] = match.match(/"([^"]+)":\s*"(.*?)(?:"(?:,|\n|$)|$)/);
-              partialJson[key] = decodeEscapedText(value);
-            });
-            jsonContent = partialJson;
-          }
-        }
+      // Extract generated-html, generated-css, generated-js
+      let updatedTab = null;
+      const htmlMatch = jsonContentRaw.match(/"generated-html":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
+      if (htmlMatch && htmlMatch[1].trim()) {
+        newLocalCode.html = decodeEscapedText(htmlMatch[1]);
+        updatedTab = 'html';
+        console.log('Writing HTML to CodeMirror:', newLocalCode.html);
+      }
 
-        if (jsonContent['generated-html'] && jsonContent['generated-html'] !== localCode.html) {
-          newLocalCode.html = decodeEscapedText(jsonContent['generated-html']);
-          setActiveCodeTab('html');
-        }
-        if (jsonContent['generated-css'] && jsonContent['generated-css'] !== localCode.css) {
-          newLocalCode.css = decodeEscapedText(jsonContent['generated-css']);
-          setActiveCodeTab('css');
-        }
-        if (jsonContent['generated-js'] && jsonContent['generated-js'] !== localCode.js) {
-          newLocalCode.js = decodeEscapedText(jsonContent['generated-js']);
-          setActiveCodeTab('js');
-        }
-      } catch (e) {
-        console.error('Error processing JSON in reasoning:', e);
-        newLocalCode.reasoning = displayReasoning;
+      const cssMatch = jsonContentRaw.match(/"generated-css":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
+      if (cssMatch && cssMatch[1].trim()) {
+        newLocalCode.css = decodeEscapedText(cssMatch[1]);
+        updatedTab = 'css';
+        console.log('Writing CSS to CodeMirror:', newLocalCode.css);
+      }
+
+      const jsMatch = jsonContentRaw.match(/"generated-js":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
+      if (jsMatch && jsMatch[1].trim()) {
+        newLocalCode.js = decodeEscapedText(jsMatch[1]);
+        updatedTab = 'js';
+        console.log('Writing JS to CodeMirror:', newLocalCode.js);
+      }
+
+      if (updatedTab) {
+        setActiveCodeTab(updatedTab);
+      } else {
+        console.warn('No valid code found in JSON block');
       }
     } else if (generatedCode.html && generatedCode.html !== localCode.html) {
       newLocalCode.html = decodeEscapedText(generatedCode.html);
-      setIsCodeVisible(true);
       setActiveCodeTab('html');
+      console.log('Writing HTML to CodeMirror:', newLocalCode.html);
     } else if (generatedCode.css && generatedCode.css !== localCode.css) {
       newLocalCode.css = decodeEscapedText(generatedCode.css);
-      setIsCodeVisible(true);
       setActiveCodeTab('css');
+      console.log('Writing CSS to CodeMirror:', newLocalCode.css);
     } else if (generatedCode.js && generatedCode.js !== localCode.js) {
       newLocalCode.js = decodeEscapedText(generatedCode.js);
-      setIsCodeVisible(true);
       setActiveCodeTab('js');
+      console.log('Writing JS to CodeMirror:', newLocalCode.js);
     } else if (generatedCode.reasoning && displayReasoning !== localCode.reasoning) {
       newLocalCode.reasoning = displayReasoning;
-      setIsCodeVisible(false);
+      console.log('Updated Reasoning:', newLocalCode.reasoning);
     } else if (!generatedCode.reasoning && localCode.reasoning) {
       newLocalCode.reasoning = '';
       setIsCodeVisible(true);
+      console.log('Cleared Reasoning');
     }
 
-    // Only update state if there are changes
+    // Update state if there are changes
     if (hasCodeChanged(newLocalCode, localCode)) {
       setLocalCode(newLocalCode);
       setGeneratedCode((prev) => ({ ...prev, ...newLocalCode }));
@@ -376,7 +392,7 @@ const LivePreview = () => {
           <CodeMirror
             value={localCode[activeCodeTab]}
             height="300px"
-            extensions={[getEditorLanguage()]}
+            extensions={[getEditorLanguage(), autoScrollPlugin]}
             onChange={(value) => updateCode(activeCodeTab)(value)}
             theme="dark"
           />

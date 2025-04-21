@@ -48,18 +48,6 @@ const AIGenerator = () => {
         css = fixedCss;
       }
 
-      // Remove Tailwind CDN script from HTML
-      const tailwindScriptRegex = /<script\s+src\s*=\s*["']https:\/\/cdn\.tailwindcss\.com["'][^>]*>\s*<\/script>/gi;
-      html = html.replace(tailwindScriptRegex, '');
-      // Warn about Tailwind usage
-      if (tailwindScriptRegex.test(html)) {
-        setError('Warning: Tailwind CSS CDN was removed. Install Tailwind locally for production use.');
-      }
-
-      // Remove external script references to avoid 404 errors
-      const scriptSrcRegex = /<script\s+src\s*=\s*["'][^"']*["'][^>]*>\s*<\/script>/gi;
-      html = html.replace(scriptSrcRegex, '');
-
       // Extract JS selectors and validate against HTML
       const selectorRegex = /document\.querySelector(All)?\s*\(['"](.+?)['"]\)/g;
       const selectors = [];
