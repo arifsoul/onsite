@@ -11,19 +11,22 @@ import './LivePreview.css';
 const initialHtml = `
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onsite AI Frontend Generator</title>
-</head>
-<body>
-  <section class="hero">
-    <div class="hero-content">
-      <h1 class="hero-title">Craft the Future with AI</h1>
-      <p class="hero-subtitle">Transform ideas into seamless code</p>
-    </div>
-  </section>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onsite AI Frontend Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gradient-to-r from-gray-800 to-gray-900">
+    <!-- Hero Section -->
+    <section class="hero min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+      <div class="hero-content text-center">
+        <h1 class="hero-title text-4xl md:text-5xl font-bold text-blue-400 mb-4">Craft the Future with AI</h1>
+        <p class="hero-subtitle text-lg md:text-xl text-gray-300 mb-6">Transform ideas into seamless code</p>
+        <button class="hero-cta bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-transform duration-300">Get Started</button>
+      </div>
+    </section>
+  </body>
 </html>
 `.trim();
 
@@ -58,6 +61,7 @@ body {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 1s ease-out forwards;
+  transition: transform 0.5s ease;
 }
 
 .hero-title {
@@ -109,17 +113,30 @@ body {
 `.trim();
 
 const initialJs = `
+/** @function init Initializes the page */
 document.addEventListener('DOMContentLoaded', () => {
-  const ctaButton = document.querySelector('.hero-cta');
-  if (ctaButton) {
-    ctaButton.addEventListener('click', () => {
-      const heroContent = document.querySelector('.hero-content');
-      heroContent.style.transition = 'transform 0.5s ease';
-      heroContent.style.transform = 'scale(1.1)';
-      setTimeout(() => {
-        heroContent.style.transform = 'scale(1)';
-      }, 300);
-    });
+  try {
+    const ctaButton = document.querySelector('.hero-cta');
+    if (ctaButton) {
+      console.log('CTA button found, attaching click listener');
+      ctaButton.addEventListener('click', () => {
+        console.log('CTA button clicked');
+        const heroContent = document.querySelector('.hero-content');
+        if (heroContent) {
+          heroContent.style.transition = 'transform 0.5s ease';
+          heroContent.style.transform = 'scale(1.1)';
+          setTimeout(() => {
+            heroContent.style.transform = 'scale(1)';
+          }, 300);
+        } else {
+          console.error('Hero content not found');
+        }
+      });
+    } else {
+      console.error('CTA button not found');
+    }
+  } catch (error) {
+    console.error('Error in iframe JavaScript:', error);
   }
 });
 `.trim();
@@ -140,7 +157,7 @@ const decodeEscapedText = (text) => {
       .replace(/\\"/g, '"')  // Handle escaped quotes
       .replace(/\\\\/g, '\\') // Handle escaped backslashes
       .replace(/\\#/g, '#'); // Handle escaped hash for selectors
-    if (next === decoded) break;
+    if (next === decoded) break;
     decoded = next;
   }
   // Additional cleanup for CSS selectors
@@ -167,7 +184,7 @@ const autoScrollPlugin = ViewPlugin.fromClass(
 const LivePreview = () => {
   const { generatedCode, setGeneratedCode } = useCode();
   const [activeCodeTab, setActiveCodeTab] = useState('html');
-  const [isCodeVisible, setIsCodeVisible] = useState(false);
+  const [isCodeVisible, setIsCodeVisible] = useState(true);
   const [localCode, setLocalCode] = useState({
     html: initialHtml,
     css: initialCss,
@@ -252,18 +269,22 @@ const LivePreview = () => {
       }
     } else if (generatedCode.html && generatedCode.html !== localCode.html) {
       newLocalCode.html = decodeEscapedText(generatedCode.html);
+      setIsCodeVisible(true);
       setActiveCodeTab('html');
       console.log('Writing HTML to CodeMirror:', newLocalCode.html);
     } else if (generatedCode.css && generatedCode.css !== localCode.css) {
       newLocalCode.css = decodeEscapedText(generatedCode.css);
+      setIsCodeVisible(true);
       setActiveCodeTab('css');
       console.log('Writing CSS to CodeMirror:', newLocalCode.css);
     } else if (generatedCode.js && generatedCode.js !== localCode.js) {
       newLocalCode.js = decodeEscapedText(generatedCode.js);
+      setIsCodeVisible(true);
       setActiveCodeTab('js');
       console.log('Writing JS to CodeMirror:', newLocalCode.js);
     } else if (generatedCode.reasoning && displayReasoning !== localCode.reasoning) {
       newLocalCode.reasoning = displayReasoning;
+      setIsCodeVisible(false);
       console.log('Updated Reasoning:', newLocalCode.reasoning);
     } else if (!generatedCode.reasoning && localCode.reasoning) {
       newLocalCode.reasoning = '';
@@ -317,6 +338,7 @@ const LivePreview = () => {
     <html>
       <head>
         <style>${localCode.css}</style>
+        <script src="https://cdn.tailwindcss.com"></script>
       </head>
       <body>
         ${localCode.html}
@@ -358,7 +380,7 @@ const LivePreview = () => {
           className="preview-iframe"
           srcDoc={iframeCode}
           title="Live Preview"
-          sandbox="allow-scripts"
+          sandbox="allow-scripts allow-same-origin"
         />
       </div>
 
