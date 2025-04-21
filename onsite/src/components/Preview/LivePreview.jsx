@@ -203,32 +203,23 @@ const LivePreview = () => {
   // Sync localCode with generatedCode and process AI response
   useEffect(() => {
     if (!generatedCode) return;
-
-    // Helper to check if code has changed
+  
     const hasCodeChanged = (newCode, currentCode) =>
       JSON.stringify(newCode) !== JSON.stringify(currentCode);
-
+  
     let newLocalCode = { ...localCode };
     let displayReasoning = generatedCode.reasoning || '';
-    // Remove ANSI escape codes and decode text
     displayReasoning = decodeEscapedText(displayReasoning.replace(/\x1B\[[0-9;]*m/g, '').trim());
-
-    // Log AI-generated content
-    console.group('AI-Generated Update');
-    if (generatedCode.html) console.log('Generated HTML:', generatedCode.html);
-    if (generatedCode.css) console.log('Generated CSS:', generatedCode.css);
-    if (generatedCode.js) console.log('Generated JS:', generatedCode.js);
-    if (generatedCode.reasoning) console.log('Raw Reasoning:', displayReasoning);
-    console.groupEnd();
-
-    // Detect ```json block
+  
+    console.log('Raw Reasoning:', generatedCode.reasoning);
+  
     const jsonBlockRegex = /```json\n([\s\S]*?)(?:\n```|$)/;
     const jsonMatch = generatedCode.reasoning && generatedCode.reasoning.match(jsonBlockRegex);
+  
     if (jsonMatch) {
       setIsCodeVisible(true);
       const jsonContentRaw = jsonMatch[1].trim();
-      console.log('Detected JSON block:', jsonContentRaw);
-
+  
       // Extract reasoning text outside JSON block
       displayReasoning = decodeEscapedText(
         generatedCode.reasoning
@@ -238,67 +229,56 @@ const LivePreview = () => {
           .trim()
       );
       newLocalCode.reasoning = displayReasoning;
-
+  
       // Extract generated-html, generated-css, generated-js
       let updatedTab = null;
       const htmlMatch = jsonContentRaw.match(/"generated-html":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
       if (htmlMatch && htmlMatch[1].trim()) {
         newLocalCode.html = decodeEscapedText(htmlMatch[1]);
         updatedTab = 'html';
-        console.log('Writing HTML to CodeMirror:', newLocalCode.html);
       }
-
+  
       const cssMatch = jsonContentRaw.match(/"generated-css":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
       if (cssMatch && cssMatch[1].trim()) {
         newLocalCode.css = decodeEscapedText(cssMatch[1]);
         updatedTab = 'css';
-        console.log('Writing CSS to CodeMirror:', newLocalCode.css);
       }
-
+  
       const jsMatch = jsonContentRaw.match(/"generated-js":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
       if (jsMatch && jsMatch[1].trim()) {
         newLocalCode.js = decodeEscapedText(jsMatch[1]);
         updatedTab = 'js';
-        console.log('Writing JS to CodeMirror:', newLocalCode.js);
       }
-
+  
       if (updatedTab) {
         setActiveCodeTab(updatedTab);
-      } else {
-        console.warn('No valid code found in JSON block');
       }
     } else if (generatedCode.html && generatedCode.html !== localCode.html) {
       newLocalCode.html = decodeEscapedText(generatedCode.html);
       setIsCodeVisible(true);
       setActiveCodeTab('html');
-      console.log('Writing HTML to CodeMirror:', newLocalCode.html);
     } else if (generatedCode.css && generatedCode.css !== localCode.css) {
       newLocalCode.css = decodeEscapedText(generatedCode.css);
       setIsCodeVisible(true);
       setActiveCodeTab('css');
-      console.log('Writing CSS to CodeMirror:', newLocalCode.css);
     } else if (generatedCode.js && generatedCode.js !== localCode.js) {
       newLocalCode.js = decodeEscapedText(generatedCode.js);
       setIsCodeVisible(true);
       setActiveCodeTab('js');
-      console.log('Writing JS to CodeMirror:', newLocalCode.js);
     } else if (generatedCode.reasoning && displayReasoning !== localCode.reasoning) {
       newLocalCode.reasoning = displayReasoning;
       setIsCodeVisible(false);
-      console.log('Updated Reasoning:', newLocalCode.reasoning);
     } else if (!generatedCode.reasoning && localCode.reasoning) {
       newLocalCode.reasoning = '';
       setIsCodeVisible(true);
-      console.log('Cleared Reasoning');
     }
-
-    // Update state if there are changes
+  
     if (hasCodeChanged(newLocalCode, localCode)) {
       setLocalCode(newLocalCode);
       setGeneratedCode((prev) => ({ ...prev, ...newLocalCode }));
     }
   }, [generatedCode, localCode, setGeneratedCode]);
-
+  
   // Debounce function to limit state updates
   const debounce = (func, wait) => {
     let timeout;
