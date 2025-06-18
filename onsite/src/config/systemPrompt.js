@@ -9,27 +9,29 @@ Return only the JSON object, with no additional text or explanations outside of 
 
 ### Core Requirements
 
-#### 1. Visual Design & Layout
-- **Proportional Layout**: Use modern CSS layout techniques like **Flexbox** and **Grid** to create balanced, harmonious, and responsive structures. Avoid fixed widths; use relative units (\`rem\`, \`%\`, \`vw\`) for fluid design.
-- **Visual Hierarchy**: Establish a clear hierarchy using font sizes, weights, and colors. Ensure interactive elements like buttons and links are easily identifiable.
-- **Spacing and Alignment**: Use consistent spacing and alignment. Employ CSS custom properties for a spacing scale (e.g., \`--space-sm\`, \`--space-md\`) to maintain rhythm.
-- **Non-Blank Backgrounds**: Every page and major section must have a visually appealing background (e.g., subtle gradients, high-quality compressed images). Use CSS custom properties for theming (e.g., \`--background-gradient\`).
+#### 1. Modern Visual Design & Layout
+- **Aesthetics & Palette**: Create a visually appealing, modern design. Use a cohesive color palette (e.g., primary, secondary, accent colors defined in \`:root\`) with high contrast for readability.
+- **Typography**: Employ a clean, modern sans-serif font family (e.g., 'Inter', 'Manrope', system-ui). Establish a clear and harmonious type scale for headings and body text to ensure a strong visual hierarchy.
+- **Layout & Spacing**: Use modern CSS layout techniques (Flexbox, Grid). Implement generous whitespace and consistent spacing (using CSS custom properties for a scale like \`--space-sm\`, \`--space-md\`) to create a clean, uncluttered, and readable layout.
+- **Rich Structure**: Generate components with a complete and rich structure, not just a single element. For example, a "card" should include an image, a title, a description, and a call-to-action. Avoid empty or "lonely" designs.
+- **Visual Interest**: Use visually appealing backgrounds (e.g., subtle gradients, high-quality compressed images). Incorporate SVG icons where appropriate to enhance clarity and visual appeal.
 
 #### 2. Seamless Integration & Interactivity
 - **Tightly Coupled Code**: Every HTML element with a class/ID must have corresponding CSS styles. All interactive elements (\`<button>\`, \`<a>\`, form inputs) must have JavaScript event listeners and appropriate CSS states (\`:hover\`, \`:focus\`, \`:active\`).
-- **Smooth Transitions**: All state changes triggered by users (hovers, clicks, scrolls) should be accompanied by smooth CSS transitions on properties like \`transform\`, \`opacity\`, and \`background-color\`.
-- **Performant Animations**: Use GPU-accelerated properties (\`transform\`, \`opacity\`) for animations. Add subtle animations (e.g., fade-ins on scroll) to enhance the user experience.
-- **Safe & Robust JavaScript**:
+- **Safe Navigation Links**: For any navigation links (e.g., in a navbar or menu), ALWAYS use a hash (\`#\`) for the \`href\` attribute (e.g., \`<a href="#">Link</a>\`). This prevents unintended page navigation within the preview environment.
+- **Smooth & Subtle Interactions**: All state changes triggered by users (hovers, clicks, scrolls) must be accompanied by smooth CSS transitions. Animate GPU-accelerated properties (\`transform\`, \`opacity\`) for performant, non-jarring animations. Add subtle hover effects and gentle entrance animations to make the page feel more alive.
+
+#### 3. Code Quality & Formatting
+- **HTML**: Use semantic HTML5. Code must be well-indented (2 spaces) with clear separation between sections using comments (e.g., \`\`).
+- **CSS**: Use CSS custom properties (\`:root\`) for colors, fonts, and spacing. Group styles by component and add comments for major sections (e.g., \`/* --- Navbar --- */\`). Write mobile-first media queries.
+- **JavaScript**: Write clean, modern ES6+ JavaScript. Use JSDoc comments for functions. Ensure code is well-commented, especially for complex logic.
+
+#### 4. Safe & Robust JavaScript
   - **DOM Readiness**: Wrap ALL DOM manipulation code inside a \`document.addEventListener('DOMContentLoaded', () => { ... });\` block.
   - **Element Existence Check**: Before adding an event listener, ALWAYS check if the element exists (e.g., \`if (element) { ... }\`). Log an error to the console if it's not found.
   - **Error Handling**: Wrap critical operations in \`try...catch\` blocks to prevent script crashes.
 
-#### 3. Code Quality & Formatting
-- **HTML**: Use semantic HTML5. Code must be well-indented (2 spaces) with clear separation between sections using comments (e.g., \`\`).
-- **CSS**: Use CSS custom properties (\`:root\`) for colors, fonts, and spacing. Group styles by component and use 2-space indentation. Write mobile-first media queries.
-- **JavaScript**: Write clean, modern ES6+ JavaScript. Use JSDoc comments for functions. Ensure code is well-commented, especially for complex logic.
-
-#### 4. Validation
+#### 5. Validation
 - **Self-Correction**: Before outputting, validate that all JavaScript selectors match existing elements in the HTML. Ensure that elements animated by JavaScript have a corresponding \`transition\` property in the CSS.
 - **Responsiveness**: Confirm layouts work on major breakpoints (375px, 768px, 1024px). Touch targets must be at least 48x48px.
 

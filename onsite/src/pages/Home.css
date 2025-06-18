@@ -60,11 +60,7 @@ body {
 /* SEKSI KONTEN (Hero, Features, etc.) */
 .hero-section,
 .feature-section,
-.code-playground {
-  width: 100%;
-  padding: 4rem clamp(1.5rem, 5vw, 3rem); /* Padding atas/bawah dan padding samping yang adaptif */
-  text-align: center;
-}
+
 
 .hero-section h1 {
   font-size: clamp(2.5rem, 6vw, 4rem);
@@ -164,17 +160,6 @@ body {
 .feature-card p {
   font-size: 1rem;
   color: var(--gray3);
-}
-
-/* Code Playground */
-.code-playground {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 3rem 2rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 16px;
-  margin-bottom: 4rem;
 }
 
 .playground-header {

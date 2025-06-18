@@ -131,169 +131,99 @@ const AIGenerator = () => {
       return;
     }
 
-    // Append prompt to history
     setPromptHistory((prev) => [...prev, { sender: 'user', message: prompt.trim() }]);
     setPrompt('');
     setIsLoading(true);
     setError(null);
     setGeneratedCode({ html: '', css: '', js: '', reasoning: '' });
     setComponents([]);
+    abortControllerRef.current = new AbortController();
 
     let accumulatedData = { html: '', css: '', js: '', reasoning: '', components: [] };
-    let currentField = null;
-    let jsonBuffer = '';
-    let isJsonMode = false;
+    let fullResponseText = '';
 
     const handleStreamChunk = (chunk) => {
-      try {
-        // Check for JSON start
-        if (!isJsonMode && chunk.includes('```json')) {
-          isJsonMode = true;
-          const jsonStartIndex = chunk.indexOf('```json');
-          if (jsonStartIndex > 0) {
-            accumulatedData.reasoning += chunk.slice(0, jsonStartIndex).replace(/\x1B\[[0-9;]*m/g, '');
-          }
-          jsonBuffer = chunk.slice(jsonStartIndex + 7);
-          setGeneratedCode({ ...accumulatedData });
-          return;
-        }
+        fullResponseText += chunk;
 
-        if (isJsonMode) {
-          jsonBuffer += chunk;
-          const cleanedJson = jsonBuffer
-            .replace(/\x1B\[[0-9;]*m/g, '')
-            .replace(/,\s*}$/, '}')
-            .replace(/,\s*\]/, ']');
+        const cleanText = (text) => text.replace(/\x1B\[[0-9;]*m/g, '');
 
-          let parsedChunk;
-          try {
-            parsedChunk = JSON.parse(cleanedJson);
-          } catch {
-            try {
-              parsedChunk = JSON.parse(`{${cleanedJson}}`);
-            } catch {
-              parsedChunk = {};
-              const keyValueMatches = cleanedJson.match(/"([^"]+)":\s*"(.*?)(?:"(?:,|\n|$)|$)/g) || [];
-              keyValueMatches.forEach((match) => {
-                const [, key, value] = match.match(/"([^"]+)":\s*"(.*?)(?:"(?:,|\n|$)|$)/);
-                parsedChunk[key] = value;
-              });
+        // Extract reasoning (text before ```json)
+        const reasoningMatch = fullResponseText.match(/([\s\S]*?)```json/);
+        accumulatedData.reasoning = reasoningMatch ? cleanText(reasoningMatch[1]) : cleanText(fullResponseText);
+
+        const jsonBlockMatch = fullResponseText.match(/```json([\s\S]*)/);
+        if (jsonBlockMatch && jsonBlockMatch[1]) {
+            let jsonStr = jsonBlockMatch[1];
+            // Clean up end of block if it exists
+            if (jsonStr.includes('```')) {
+                jsonStr = jsonStr.split('```')[0];
             }
-          }
 
-          if (parsedChunk['generated-html']) {
-            currentField = 'html';
-            accumulatedData.html = parsedChunk['generated-html'];
-          }
-          if (parsedChunk['generated-css']) {
-            currentField = 'css';
-            accumulatedData.css = parsedChunk['generated-css'];
-          }
-          if (parsedChunk['generated-js']) {
-            currentField = 'js';
-            accumulatedData.js = parsedChunk['generated-js'];
-          }
-          if (parsedChunk.components) {
-            accumulatedData.components = parsedChunk.components;
-          }
-          if (parsedChunk.reasoning) {
-            accumulatedData.reasoning += parsedChunk.reasoning;
-          }
-        } else {
-          if (currentField) {
-            accumulatedData[currentField] += chunk.replace(/\x1B\[[0-9;]*m/g, '');
-          } else {
-            accumulatedData.reasoning += chunk.replace(/\x1B\[[0-9;]*m/g, '');
-          }
+            const decode = (text) => text ? text.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\') : '';
+            
+            // Use regex on the growing buffer to get the latest code
+            const htmlMatch = jsonStr.match(/"generated-html"\s*:\s*"((?:\\.|[^"\\])*)/);
+            accumulatedData.html = decode(htmlMatch ? htmlMatch[1] : '');
+
+            const cssMatch = jsonStr.match(/"generated-css"\s*:\s*"((?:\\.|[^"\\])*)/);
+            accumulatedData.css = decode(cssMatch ? cssMatch[1] : '');
+
+            const jsMatch = jsonStr.match(/"generated-js"\s*:\s*"((?:\\.|[^"\\])*)/);
+            accumulatedData.js = decode(jsMatch ? jsMatch[1] : '');
         }
 
         setGeneratedCode({ ...accumulatedData });
-      } catch (error) {
-        console.error('Error processing stream chunk:', error);
-        accumulatedData.reasoning += `\nError processing chunk: ${error.message}`;
-        setGeneratedCode({ ...accumulatedData });
-      }
     };
 
     try {
-      const maxRetries = 3;
-      let response;
-      abortControllerRef.current = new AbortController();
-      for (let i = 0; i < maxRetries; i++) {
+      await generateCode(
+        `${prompt}\n\nEnsure all CSS classes are used in the HTML and match exactly. Avoid generating unused styles. Do not include external script tags like Tailwind CDN or script.js.`,
+        true,
+        false,
+        handleStreamChunk,
+        abortControllerRef.current.signal
+      );
+
+      // Final processing after stream ends
+      const jsonMatch = fullResponseText.match(/```json\n([\s\S]*?)\n```/);
+      if (jsonMatch && jsonMatch[1]) {
         try {
-          response = await generateCode(
-            `${prompt}\n\nEnsure all CSS classes are used in the HTML and match exactly. Avoid generating unused styles. Do not include external script tags like Tailwind CDN or script.js.`,
-            true,
-            false,
-            handleStreamChunk,
-            abortControllerRef.current.signal
-          );
-          break;
+            const parsedJson = JSON.parse(jsonMatch[1]);
+            const { 'generated-html': html = '', 'generated-css': css = '', 'generated-js': js = '' } = parsedJson;
+            const { html: fixedHtml, css: fixedCss, js: safeJs } = validateAndFixCode(html, css, js);
+            
+            accumulatedData.html = fixedHtml;
+            accumulatedData.css = fixedCss;
+            accumulatedData.js = safeJs;
+
         } catch (error) {
-          if (error.name === 'AbortError') {
+             console.error('Final JSON parsing error:', error);
+             setError("Failed to parse the final code from AI. Using regex-extracted code as fallback.");
+        }
+      }
+      
+      setGeneratedCode({ ...accumulatedData });
+      if (accumulatedData.reasoning.trim()) {
+        setPromptHistory((prev) => [...prev, { sender: 'ai', message: accumulatedData.reasoning.trim() }]);
+      }
+
+    } catch (error) {
+        if (error.name === 'AbortError') {
             console.log('Request aborted by user.');
             setError('Code generation stopped.');
             accumulatedData.reasoning += '\nGeneration stopped by user.';
-            setGeneratedCode({ ...accumulatedData });
-            setComponents(accumulatedData.components);
-            setIsLoading(false);
-            abortControllerRef.current = null;
-            return;
-          }
-          if (i === maxRetries - 1) throw error;
-          console.warn(`Retry ${i + 1}/${maxRetries} due to error: ${error.message}`);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+        } else {
+            console.error('Code Generation Error:', error);
+            setError(`Failed to generate code: ${error.message}.`);
+            accumulatedData.reasoning += `\nError: ${error.message}`;
         }
-      }
-
-      try {
-        const { html = '', css = '', js = '', components = [], reasoning = '' } = accumulatedData;
-
-        if (!html && !css && !js) {
-          throw new Error('Invalid response from API - no code fields generated');
-        }
-
-        const { html: fixedHtml, css: fixedCss, js: safeJs } = validateAndFixCode(html, css, js);
-
-        setGeneratedCode({
-          html: fixedHtml.replace(/<\/?template[^>]*>/g, ''),
-          css: fixedCss.replace(/\/\*.*?\*\//g, ''),
-          js: safeJs,
-          reasoning,
-        });
-        setComponents(components);
-        if (reasoning.trim()) {
-          setPromptHistory((prev) => [...prev, { sender: 'ai', message: reasoning.trim() }]);
-        }
-      } catch (error) {
-        console.error('Processing Error:', error);
-        setGeneratedCode({
-          html: accumulatedData.html || '<div class="error">Error generating code. Partial results preserved.</div>',
-          css: accumulatedData.css || '.error { color: red; padding: 20px; text-align: center; }',
-          js: accumulatedData.js || 'console.error("Code generation failed");',
-          reasoning: accumulatedData.reasoning || '',
-        });
-        setComponents(accumulatedData.components);
-        setError(`Failed to process generated code: ${error.message}. Try simplifying your prompt.`);
-        setPromptHistory((prev) => [...prev, { sender: 'ai', message: accumulatedData.reasoning || error.message }]);
-      }
-    } catch (error) {
-      console.error('Code Generation Error:', error);
-      setGeneratedCode({
-        html: accumulatedData.html || '<div class="error">Error generating code. Partial results preserved.</div>',
-        css: accumulatedData.css || '.error { color: red; padding: 20px; text-align: center; }',
-        js: accumulatedData.js || 'console.error("Code generation failed");',
-        reasoning: accumulatedData.reasoning || '',
-      });
-      setComponents(accumulatedData.components);
-      setError(`Failed to generate code: ${error.message}. Check your network connection or simplify your prompt.`);
-      setPromptHistory((prev) => [...prev, { sender: 'ai', message: accumulatedData.reasoning || error.message }]);
+        setGeneratedCode({ ...accumulatedData });
     } finally {
       setIsLoading(false);
       abortControllerRef.current = null;
     }
   };
-
+  
   const debouncedGenerate = debounce(handleGenerate, 500);
 
   const handleInterrupt = () => {
@@ -304,6 +234,7 @@ const AIGenerator = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       debouncedGenerate(e);
     }
   };

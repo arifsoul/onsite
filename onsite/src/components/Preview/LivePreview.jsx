@@ -18,7 +18,6 @@ const initialHtml = `
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gradient-to-r from-gray-800 to-gray-900">
-    <!-- Hero Section -->
     <section class="hero min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
       <div class="hero-content text-center">
         <h1 class="hero-title text-4xl md:text-5xl font-bold text-blue-400 mb-4">Craft the Future with AI</h1>
@@ -192,92 +191,47 @@ const LivePreview = () => {
     reasoning: '',
   });
   const reasoningRef = useRef(null);
+  const prevCodeRef = useRef();
 
-  // Auto-scroll to bottom of reasoning container
   useEffect(() => {
     if (reasoningRef.current) {
       reasoningRef.current.scrollTop = reasoningRef.current.scrollHeight;
     }
   }, [localCode.reasoning]);
 
-  // Sync localCode with generatedCode and process AI response
+  // Sync localCode with generatedCode and switch tabs
   useEffect(() => {
-    if (!generatedCode) return;
-  
-    const hasCodeChanged = (newCode, currentCode) =>
-      JSON.stringify(newCode) !== JSON.stringify(currentCode);
-  
-    let newLocalCode = { ...localCode };
-    let displayReasoning = generatedCode.reasoning || '';
-    displayReasoning = decodeEscapedText(displayReasoning.replace(/\x1B\[[0-9;]*m/g, '').trim());
-  
-    console.log('Raw Reasoning:', generatedCode.reasoning);
-  
-    const jsonBlockRegex = /```json\n([\s\S]*?)(?:\n```|$)/;
-    const jsonMatch = generatedCode.reasoning && generatedCode.reasoning.match(jsonBlockRegex);
-  
-    if (jsonMatch) {
-      setIsCodeVisible(true);
-      const jsonContentRaw = jsonMatch[1].trim();
-  
-      // Extract reasoning text outside JSON block
-      displayReasoning = decodeEscapedText(
-        generatedCode.reasoning
-          .replace(jsonBlockRegex, '')
-          .replace(/\x1B\[[0-9;]*m/g, '')
-          .replace(/<\/?think>/g, '')
-          .trim()
-      );
-      newLocalCode.reasoning = displayReasoning;
-  
-      // Extract generated-html, generated-css, generated-js
-      let updatedTab = null;
-      const htmlMatch = jsonContentRaw.match(/"generated-html":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
-      if (htmlMatch && htmlMatch[1].trim()) {
-        newLocalCode.html = decodeEscapedText(htmlMatch[1]);
-        updatedTab = 'html';
-      }
-  
-      const cssMatch = jsonContentRaw.match(/"generated-css":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
-      if (cssMatch && cssMatch[1].trim()) {
-        newLocalCode.css = decodeEscapedText(cssMatch[1]);
-        updatedTab = 'css';
-      }
-  
-      const jsMatch = jsonContentRaw.match(/"generated-js":\s*"(.*?)"(?=\s*(?:,|\n|}$))/s);
-      if (jsMatch && jsMatch[1].trim()) {
-        newLocalCode.js = decodeEscapedText(jsMatch[1]);
-        updatedTab = 'js';
-      }
-  
-      if (updatedTab) {
-        setActiveCodeTab(updatedTab);
-      }
-    } else if (generatedCode.html && generatedCode.html !== localCode.html) {
-      newLocalCode.html = decodeEscapedText(generatedCode.html);
-      setIsCodeVisible(true);
-      setActiveCodeTab('html');
-    } else if (generatedCode.css && generatedCode.css !== localCode.css) {
-      newLocalCode.css = decodeEscapedText(generatedCode.css);
-      setIsCodeVisible(true);
-      setActiveCodeTab('css');
-    } else if (generatedCode.js && generatedCode.js !== localCode.js) {
-      newLocalCode.js = decodeEscapedText(generatedCode.js);
-      setIsCodeVisible(true);
-      setActiveCodeTab('js');
-    } else if (generatedCode.reasoning && displayReasoning !== localCode.reasoning) {
-      newLocalCode.reasoning = displayReasoning;
-      setIsCodeVisible(false);
-    } else if (!generatedCode.reasoning && localCode.reasoning) {
-      newLocalCode.reasoning = '';
-      setIsCodeVisible(true);
+    const { html, css, js, reasoning } = generatedCode;
+    const prevCode = prevCodeRef.current;
+    
+    // Check if generatedCode has meaningful content
+    const hasGeneratedContent = html || css || js || reasoning;
+
+    if (hasGeneratedContent && prevCode) {
+        // Determine which tab to activate by comparing current vs previous code
+        if (html && html !== prevCode.html) {
+            setActiveCodeTab('html');
+        } else if (css && css !== prevCode.css) {
+            setActiveCodeTab('css');
+        } else if (js && js !== prevCode.js) {
+            setActiveCodeTab('js');
+        }
     }
-  
-    if (hasCodeChanged(newLocalCode, localCode)) {
-      setLocalCode(newLocalCode);
-      setGeneratedCode((prev) => ({ ...prev, ...newLocalCode }));
+
+    // Update the local state for rendering in the iframe and editors
+    // Only update if there is new content from the generator
+    if(hasGeneratedContent) {
+        setLocalCode({
+            html: html || initialHtml,
+            css: css || initialCss,
+            js: js || initialJs,
+            reasoning: reasoning || '',
+        });
     }
-  }, [generatedCode, localCode, setGeneratedCode]);
+
+    // Update the ref for the next comparison
+    prevCodeRef.current = generatedCode;
+  }, [generatedCode]);
   
   // Debounce function to limit state updates
   const debounce = (func, wait) => {
@@ -288,9 +242,10 @@ const LivePreview = () => {
     };
   };
 
-  // Handler for code changes
+  // Handler for code changes from manual editing
   const handleCodeChange = useCallback(
     debounce((field, value) => {
+      // When user edits manually, update the shared state
       setGeneratedCode((prev) => ({ ...prev, [field]: value }));
     }, 300),
     [setGeneratedCode]
@@ -318,7 +273,7 @@ const LivePreview = () => {
     <html>
       <head>
         <style>${localCode.css}</style>
-        <script src="https://cdn.tailwindcss.com"></script>
+         <script src="https://cdn.tailwindcss.com"></script>
       </head>
       <body>
         ${localCode.html}

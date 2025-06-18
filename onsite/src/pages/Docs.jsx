@@ -57,8 +57,8 @@ const Docs = () => {
               <h3>Konfigurasi</h3>
               <p>Buat file `.env` di root proyek Anda dengan kredensial API berikut:</p>
               <CodeBlock>{`VITE_AUTH0_DOMAIN=your_auth_domain
-VITE_AUTH0_CLIENT_ID=your_client_id
-VITE_OPENROUTER_API_KEY=your_api_key`}</CodeBlock>
+              VITE_AUTH0_CLIENT_ID=your_client_id
+              VITE_OPENROUTER_API_KEY=your_api_key`}</CodeBlock>
             </div>
           </section>
 
