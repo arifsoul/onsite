@@ -1,105 +1,142 @@
 .docs-page {
   min-height: 100vh;
-  background: var(--background);
-}
-
-.docs-header {
-  background: var(--header-bg);
-  color: white;
-  padding: 2rem;
-  text-align: center;
+  background: var(--normal-bg);
+  color: var(--normal-text);
 }
 
 .docs-container {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 2rem;
+  grid-template-columns: 240px 1fr;
+  gap: 3rem;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 100px;
 }
 
 .docs-sidebar {
   position: sticky;
-  top: 2rem;
-  height: fit-content;
-  padding: 1rem;
-  background: var(--sidebar-bg);
-  border-radius: 8px;
+  top: 100px;
+  height: calc(100vh - 120px);
+  padding-right: 2rem;
+  border-right: 1px solid var(--normal-border);
 }
 
 .docs-sidebar nav h3 {
-  color: var(--text-primary);
-  margin-bottom: 1rem;
+  color: var(--gray1);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .docs-sidebar nav ul {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .docs-sidebar nav a {
-  color: var(--text-secondary);
+  color: var(--gray2);
   text-decoration: none;
   display: block;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background 0.3s ease;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .docs-sidebar nav a:hover {
-  background: var(--hover-bg);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--primary);
 }
 
 .docs-main {
-  padding: 0 2rem;
+  padding: 0 1rem;
+}
+
+.docs-intro {
+  margin-bottom: 4rem;
+}
+.docs-intro h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.docs-intro p {
+  font-size: 1.2rem;
+  color: var(--gray2);
 }
 
 .docs-section {
-  margin-bottom: 3rem;
-  background: var(--content-bg);
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 4rem;
 }
 
-.section-content pre {
-  background: var(--code-bg);
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
+.docs-section h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--normal-border);
 }
 
-.section-content code {
-  font-family: 'Courier New', monospace;
-  font-size: 0.9em;
-  color: var(--code-text);
+.section-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
-
-.faq-content {
-  margin-top: 2rem;
-}
-
-.faq-item {
-  background: var(--faq-bg);
-  padding: 1.5rem;
-  border-radius: 8px;
+.section-content p {
+  color: var(--gray2);
+  line-height: 1.7;
   margin-bottom: 1.5rem;
 }
 
-.faq-item h3 {
-  color: var(--accent);
-  margin-top: 0;
+.code-block-wrapper {
+  position: relative;
+  margin: 2rem 0;
+}
+
+.code-block-wrapper pre {
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--normal-border);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.code-block-wrapper code {
+  font-size: 0.9em;
+  color: #d4d4d4;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--normal-border);
+  color: var(--gray2);
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: var(--primary);
+  color: white;
 }
 
 @media (max-width: 768px) {
   .docs-container {
     grid-template-columns: 1fr;
-    padding: 1rem;
+    padding-top: 80px;
   }
-  
   .docs-sidebar {
     position: static;
-    margin-bottom: 2rem;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--normal-border);
+    padding-bottom: 2rem;
   }
 }

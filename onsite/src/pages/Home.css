@@ -4,7 +4,6 @@
   --gray1: hsl(0, 0%, 99%);
   --gray2: hsl(0, 0%, 97.3%);
   --gray3: hsl(0, 0%, 95.1%);
-  --gray4: hsl(0, 0%, 93%);
   --gray12: hsl(0, 0%, 9%);
   --primary: hsl(270, 60%, 50%);
   --primary-hover: hsl(270, 60%, 45%);
@@ -30,76 +29,54 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  max-width: 100%;
+  width: 100%; /* Changed from max-width to width */
 }
 
-/* Header */
+/* HEADER UTAMA */
 .home-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 2rem;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(18, 18, 18, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--normal-border);
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
+  height: 65px; /* Memberi tinggi eksplisit pada header */
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.logo h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--gray1);
-  margin: 0;
-}
-
-.logo span {
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: var(--gray3);
-}
-
-/* Main Content */
+/* KONTEN UTAMA */
 .home-main {
-  padding: 80px 2rem 2rem;
-  max-width: 1440px;
-  margin: 0 auto;
   width: 100%;
+  padding-top: 65px; /* Padding untuk header yang fixed */
+  /* Padding bawah untuk memberi ruang bagi generator yang mengambang */
+  padding-bottom: 200px; 
 }
 
-/* Hero Section */
-.hero-section {
+/* SEKSI KONTEN (Hero, Features, etc.) */
+.hero-section,
+.feature-section,
+.code-playground {
+  width: 100%;
+  padding: 4rem clamp(1.5rem, 5vw, 3rem); /* Padding atas/bawah dan padding samping yang adaptif */
   text-align: center;
-  padding: 6rem 2rem;
-  border-radius: 16px;
-  margin-bottom: 4rem;
 }
 
 .hero-section h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: var(--gray1);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800; /* Dibuat lebih tebal */
+  margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
 .hero-section p {
-  font-size: 1.2rem;
-  font-weight: 400;
-  max-width: 800px;
-  margin: 0 auto 2rem;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  max-width: 720px;
+  margin: 0 auto 2.5rem auto;
   color: var(--gray3);
 }
 
@@ -125,6 +102,7 @@ body {
 /* Feature Section */
 .feature-section {
   margin-bottom: 4rem;
+  padding: 0 2rem;
 }
 
 .feature-header {
@@ -151,6 +129,9 @@ body {
   gap: 2rem;
   list-style: none;
   padding: 0;
+  max-width: 1200px; /* Batasi lebar daftar fitur */
+  margin: 3rem auto 0 auto;
+  text-align: left;
 }
 
 .feature-card {
@@ -201,190 +182,27 @@ body {
   margin-bottom: 2rem;
 }
 
-.playground-header h2 {
-  font-size: 2.25rem;
+.playground-header h2,
+.feature-header h2 {
+  font-size: clamp(2rem, 5vw, 2.75rem);
   font-weight: 700;
-  color: var(--gray1);
 }
 
-.playground-header p {
-  font-size: 1.1rem;
+.playground-header p,
+.feature-header p {
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
   color: var(--gray3);
+  max-width: 720px;
+  margin: 1rem auto 0 auto;
 }
-
-.generator-section,
-.preview-section,
-.editor-section {
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--normal-border);
-  border-radius: 12px;
-}
-
-.generator-section h3,
-.preview-section h3,
-.editor-section h3 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--gray1);
-  margin-bottom: 1rem;
-}
-
-.generator-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-}
-
-.generator-file h4 {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--gray2);
-  margin-bottom: 0.5rem;
-}
-
-.generator-file textarea,
-.code-editor textarea {
-  width: 100%;
-  height: 200px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.95rem;
-  padding: 1rem;
-  border: none;
-  border-radius: 8px;
-  background: hsl(0, 0%, 12%);
-  color: var(--gray1);
-  resize: vertical;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s ease;
-}
-
-.generator-file textarea:focus,
-.code-editor textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(108, 67, 255, 0.3);
-}
-
-.preview-iframe {
-  width: 100%;
-  height: 450px;
-  border: none;
-  border-radius: 12px;
-  background: hsl(0, 0%, 12%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.tabs button {
-  padding: 0.5rem 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--normal-border);
-  border-radius: 9999px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--gray2);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tabs button.active {
-  background: var(--primary);
-  color: var(--gray1);
-  border-color: var(--primary);
-}
-
-.tabs button:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Prompt Textarea */
-.prompt-container {
-  position: fixed;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 800px;
-  background: rgba(0, 0, 0, 0.95);
-  border: 1px solid var(--normal-border);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.prompt-container.hidden {
-  transform: translateX(-50%) translateY(100%);
-  opacity: 0;
-}
-
-.prompt-container.visible {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
-
-.prompt-toggle {
-  display: block;
-  margin: 0 auto 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--primary);
-  border: none;
-  border-radius: 9999px;
-  color: var(--gray1);
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.prompt-toggle:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-}
-
-.prompt-textarea {
-  width: 100%;
-  height: 100px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 8px;
-  background: hsl(0, 0%, 12%);
-  color: var(--gray1);
-  resize: none;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.prompt-textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(108, 67, 255, 0.3);
-}
-
 /* Footer */
 .home-footer {
   text-align: center;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.95);
+  background: var(--normal-bg);
   border-top: 1px solid var(--normal-border);
   color: var(--gray3);
   font-size: 0.9rem;
-}
-
-.footer-content {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
 }
 
 .footer-link {
@@ -404,137 +222,8 @@ body {
 
 .hero-section,
 .feature-card,
-.generator-section,
-.preview-section,
-.editor-section {
+.code-playground {
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .home-main {
-    padding: 80px 1rem 2rem;
-  }
-
-  .feature-list {
-    grid-template-columns: 1fr;
-  }
-
-  .feature-card {
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  .hero-section h1 {
-    font-size: 2.5rem;
-  }
-
-  .hero-section p {
-    font-size: 1.1rem;
-    max-width: 600px;
-  }
-}
-
-@media (max-width: 768px) {
-  .home-header {
-    padding: 1rem;
-  }
-
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .nav-menu {
-    width: 100%;
-  }
-
-  .nav-menu ul {
-    flex-direction: column;
-    gap: 0.75rem;
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  .hero-section {
-    padding: 4rem 1rem;
-  }
-
-  .hero-section h1 {
-    font-size: 2rem;
-  }
-
-  .hero-section p {
-    font-size: 1rem;
-  }
-
-  .code-playground {
-    padding: 2rem 1rem;
-  }
-
-  .generator-section,
-  .preview-section,
-  .editor-section {
-    padding: 1.5rem;
-  }
-
-  .generator-file textarea,
-  .code-editor textarea {
-    height: 150px;
-  }
-
-  .preview-iframe {
-    height: 350px;
-  }
-
-  .feature-header h2,
-  .playground-header h2 {
-    font-size: 1.75rem;
-  }
-
-  .feature-header p,
-  .playground-header p {
-    font-size: 1rem;
-  }
-
-  .prompt-container {
-    width: 95%;
-    padding: 0.75rem;
-  }
-
-  .prompt-textarea {
-    height: 80px;
-  }
-}
-
-@media (max-width: 600px) {
-  .home-main {
-    padding: 70px 0.5rem 1rem;
-  }
-
-  .hero-cta {
-    padding: 0.6rem 1.5rem;
-    font-size: 0.9rem;
-  }
-
-  .generator-section h3,
-  .preview-section h3,
-  .editor-section h3 {
-    font-size: 1.25rem;
-  }
-
-  .generator-file h4 {
-    font-size: 0.95rem;
-  }
-
-  .tabs button {
-    padding: 0.4rem 1rem;
-    font-size: 0.85rem;
-  }
-
-  .prompt-toggle {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
-  }
-}
+/* Other sections like prompt-container, etc., are removed as the AIGenerator is now floating */

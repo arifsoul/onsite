@@ -1,5 +1,6 @@
 import React from 'react';
 import NavMenu from '../components/Navigation/NavMenu';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import './Contact.css';
 
 const Contact = () => {
@@ -8,46 +9,48 @@ const Contact = () => {
       <header className="home-header">
         <NavMenu />
       </header>
-      <div className="contact-container">
-        <h1>Contact Our Team</h1>
+      <main className="contact-main">
+        <div className="contact-header">
+          <h1>Hubungi Kami</h1>
+          <p>Punya pertanyaan atau butuh bantuan? Tim kami siap membantu Anda.</p>
+        </div>
         <div className="contact-content">
           <div className="contact-info">
-            <h2>Get in Touch</h2>
-            <p>Have questions? Our team is here to help!</p>
-            <div className="contact-details">
-              <div className="contact-item">
-                <h3>Email</h3>
-                <p>support@onsite.com</p>
-              </div>
-              <div className="contact-item">
-                <h3>Phone</h3>
-                <p>+1 (555) 123-4567</p>
-              </div>
-              <div className="contact-item">
-                <h3>Office</h3>
-                <p>123 Tech Valley Drive</p>
-                <p>San Francisco, CA 94107</p>
-              </div>
+            <div className="contact-item">
+              <FaEnvelope className="contact-icon" />
+              <h3>Email</h3>
+              <p>support@onsite.com</p>
+            </div>
+            <div className="contact-item">
+              <FaPhone className="contact-icon" />
+              <h3>Telepon</h3>
+              <p>+1 (555) 123-4567</p>
+            </div>
+            <div className="contact-item">
+              <FaMapMarkerAlt className="contact-icon" />
+              <h3>Kantor</h3>
+              <p>123 Tech Valley, San Francisco</p>
             </div>
           </div>
           
           <form className="contact-form">
+            <h2>Kirim Pesan</h2>
             <div className="form-group">
-              <label htmlFor="name">Name</label>
-              <input type="text" id="name" required />
+              <label htmlFor="name">Nama</label>
+              <input type="text" id="name" placeholder="Nama lengkap Anda" required />
             </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input type="email" id="email" required />
+              <input type="email" id="email" placeholder="alamat@email.com" required />
             </div>
             <div className="form-group">
-              <label htmlFor="message">Message</label>
-              <textarea id="message" rows="5" required></textarea>
+              <label htmlFor="message">Pesan</label>
+              <textarea id="message" rows="5" placeholder="Tulis pesan Anda di sini..." required></textarea>
             </div>
-            <button type="submit" className="submit-button">Send Message</button>
+            <button type="submit" className="submit-button">Kirim Pesan</button>
           </form>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
