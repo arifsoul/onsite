@@ -1,50 +1,44 @@
-// oncomn/src/utils/formatter.js
+// onsite/oncomn/src/utils/formatter.js
 
-import prettier from "prettier/standalone";
-import parserBabel from "prettier/plugins/babel";
-import parserHtml from "prettier/plugins/html";
-import parserPostCss from "prettier/plugins/postcss";
+import prettier from 'prettier/standalone';
+// Impor parser yang dibutuhkan secara eksplisit
+import parserBabel from 'prettier/plugins/babel';
+import parserHtml from 'prettier/plugins/html';
+import parserPostCss from 'prettier/plugins/postcss';
+
+const languageParsers = {
+  html: { parser: 'html', plugins: [parserHtml] },
+  css: { parser: 'css', plugins: [parserPostCss] },
+  // Daftarkan parser babel untuk javascript
+  js: { parser: 'babel', plugins: [parserBabel] },
+};
 
 /**
- * Merapikan string kode menggunakan Prettier secara otomatis.
- * @param {string} code - Kode yang belum diformat.
- * @param {'html' | 'css' | 'js'} language - Bahasa kode.
- * @returns {Promise<string>} - Kode yang sudah diformat.
+ * Formats code using Prettier.
+ * @param {string} code The code to format.
+ * @param {('html'|'css'|'js')} language The programming language.
+ * @returns {Promise<string>} The formatted code.
  */
 export const formatCode = async (code, language) => {
-  let parser;
-  let plugins;
-
-  switch (language) {
-    case 'html':
-      parser = 'html';
-      plugins = [parserHtml];
-      break;
-    case 'css':
-      parser = 'css';
-      plugins = [parserPostCss];
-      break;
-    case 'js':
-      parser = 'babel';
-      plugins = [parserBabel];
-      break;
-    default:
-      // Jika bahasa tidak didukung, kembalikan kode asli
-      return code;
+  if (!code || !languageParsers[language]) {
+    return code;
   }
 
   try {
+    const { parser, plugins } = languageParsers[language];
     const formattedCode = await prettier.format(code, {
       parser: parser,
-      plugins: plugins,
-      tabWidth: 2,
+      plugins: plugins, // Gunakan plugins yang sudah diimpor
+      // Opsi Prettier lainnya bisa ditambahkan di sini
       semi: true,
-      singleQuote: true, // Opsi tambahan untuk konsistensi
+      singleQuote: true,
+      tabWidth: 2,
     });
     return formattedCode;
   } catch (error) {
+    // Log error ini agar lebih mudah di-debug, tapi jangan sampai crash aplikasi
     console.error(`Could not format ${language} code:`, error);
-    // Jika terjadi error (misal, syntax tidak valid), kembalikan kode asli
+    // Kembalikan kode asli jika terjadi error pemformatan
     return code;
   }
 };
