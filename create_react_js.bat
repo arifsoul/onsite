@@ -1,3 +1,3 @@
-npm create vite@latest onsite -- --template react
-cd onsite
+npm create vite@latest oncomn -- --template react
+cd oncomn
 npm install

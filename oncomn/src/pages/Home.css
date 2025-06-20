@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --gray1: hsl(0, 0%, 99%);
+  --gray2: hsl(0, 0%, 97.3%);
+  --gray3: hsl(0, 0%, 95.1%);
+  --gray12: hsl(0, 0%, 9%);
+  --primary: hsl(270, 60%, 50%);
+  --primary-hover: hsl(270, 60%, 45%);
+  --normal-bg: hsl(0, 0%, 9%);
+  --normal-border: hsl(0, 0%, 20%);
+  --normal-text: hsl(0, 0%, 99%);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  background: var(--normal-bg);
+  color: var(--normal-text);
+  overflow-x: hidden;
+}
+
+/* Layout Container */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* HEADER UTAMA */
+.home-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(18, 18, 18, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--normal-border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 65px;
+}
+
+/* KONTEN UTAMA */
+.home-main {
+  width: 100%;
+  padding-top: 65px; 
+  padding-bottom: 200px;
+  padding-left: 1rem; /* Reduced padding */
+  padding-right: 1rem; /* Reduced padding */
+}
+
+/* SEKSI KONTEN (Hero, Features, etc.) */
+.hero-section,
+.feature-section {
+  max-width: 1400px; /* Wider content */
+  margin: 4rem auto;
+  padding: 2rem 0; /* Reduced padding */
+  text-align: center;
+}
+
+
+.hero-section h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-section p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  max-width: 720px;
+  margin: 0 auto 2.5rem auto;
+  color: var(--gray3);
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(90deg, var(--primary), hsl(270, 60%, 60%));
+  color: var(--gray1);
+  text-decoration: none;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.hero-cta:hover {
+  background: linear-gradient(90deg, var(--primary-hover), hsl(270, 60%, 55%));
+  transform: translateY(-2px);
+}
+
+/* Feature Section */
+.feature-section {
+  margin-bottom: 4rem;
+  padding: 0 1rem; /* Reduced padding */
+}
+
+.feature-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.feature-header h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--gray1);
+}
+
+.feature-header p {
+  font-size: 1.1rem;
+  color: var(--gray3);
+  max-width: 800px;
+  margin: 0.5rem auto 0;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  list-style: none;
+  padding: 0;
+  max-width: 1200px;
+  margin: 3rem auto 0 auto;
+  text-align: left;
+}
+
+.feature-card {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--normal-border);
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.feature-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--gray1);
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: var(--gray3);
+}
+
+.playground-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.playground-header h2,
+.feature-header h2 {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+}
+
+.playground-header p,
+.feature-header p {
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  color: var(--gray3);
+  max-width: 720px;
+  margin: 1rem auto 0 auto;
+}
+/* Footer */
+.home-footer {
+  text-align: center;
+  padding: 2rem;
+  background: var(--normal-bg);
+  border-top: 1px solid var(--normal-border);
+  color: var(--gray3);
+  font-size: 0.9rem;
+}
+
+.footer-link {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-section,
+.feature-card,
+.code-playground {
+  animation: fadeIn 0.5s ease-out;
+}

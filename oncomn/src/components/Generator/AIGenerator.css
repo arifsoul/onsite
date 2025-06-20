@@ -1,0 +1,137 @@
+/* src/components/Generator/AIGenerator.css */
+:root {
+  --primary-color: #8a5ff1;
+  --text-color: #e0e0e0;
+  --error-color: #ff5555;
+  --bg-glass: rgba(28, 28, 32, 0.7);
+  --input-bg: rgba(45, 45, 50, 0.8);
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main floating container */
+.ai-generator {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem); /* Reduced padding */
+  max-width: 800px;
+  z-index: 1000;
+  
+  background: var(--bg-glass);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.ai-generator:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Prompt container */
+.prompt-container {
+  width: 100%;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border-radius: 12px;
+  padding: 0.5rem;
+  width: 100%;
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--primary-color);
+}
+
+.prompt-input {
+  width: 100%;
+  min-height: 50px;
+  max-height: 200px;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--text-color);
+  resize: none;
+  line-height: 1.5;
+}
+
+.prompt-input:focus {
+  outline: none;
+}
+
+.prompt-input::placeholder {
+  color: #888;
+}
+
+.send-button {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  will-change: transform;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+}
+
+.send-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.send-button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.paper-plane {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-color);
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ai-generator {
+    width: calc(100% - 2rem);
+    bottom: 1rem;
+    padding: 0.75rem;
+  }
+}
