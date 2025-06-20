@@ -1,43 +1,10 @@
-import React, { useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import ComponentEditor from '../components/Editor/ComponentEditor';
-import LivePreview from '../components/Preview/LivePreview';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import NavMenu from '../components/Navigation/NavMenu';
 import FeatureCard from '../components/FeatureCard/FeatureCard';
-import AIGenerator from '../components/Generator/AIGenerator';
 import './Home.css';
 
-const PromptTextarea = ({ onPromptChange }) => {
-  const [prompt, setPrompt] = useState('');
-  const [isVisible, setIsVisible] = useState(true);
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setPrompt(value);
-    onPromptChange(value);
-  };
-};
-
 const Home = () => {
-  const { isAuthenticated } = useAuth0();
-  const [htmlCode, setHtmlCode] = useState('<h1>Hello World</h1>');
-  const [cssCode, setCssCode] = useState('h1 { color: #ffffff; }');
-  const [jsCode, setJsCode] = useState('console.log("Hello World");');
-  const [activeTab, setActiveTab] = useState('html');
-  const [prompt, setPrompt] = useState('');
-
-  const iframeCode = `
-<html>
-  <head>
-    <style>${cssCode}</style>
-  </head>
-  <body>
-    ${htmlCode}
-    <script>${jsCode}</script>
-  </body>
-</html>
-  `.trim();
-
   return (
     <div className="home-container">
       <header className="home-header">
@@ -49,9 +16,9 @@ const Home = () => {
           <p>
             Powered by advanced AI, Oncomn enables you to craft modern, responsive websites with ease. Edit HTML, CSS, and JavaScript in real-time and see your vision come to life.
           </p>
-          <a href="#generator" className="hero-cta">
+          <Link to="/playground" className="hero-cta">
             Start Building Now
-          </a>
+          </Link>
         </section>
         <section className="feature-section">
           <div className="feature-header">
@@ -90,36 +57,11 @@ const Home = () => {
             />
           </ul>
         </section>
-        <section className="code-playground" id="aipreview">
-          <div className="playground-header">
-            <h2>Build Your Website Now</h2>
-            <p>Edit code, preview instantly, and refine your design in one seamless workflow.</p>
-          </div>
-          <LivePreview
-            html={htmlCode}
-            css={cssCode}
-            js={jsCode}
-          />
-        </section>
-        <section className="code-playground" id="generator">
-          <AIGenerator
-            htmlCode={htmlCode}
-            cssCode={cssCode}
-            jsCode={jsCode}
-            onHtmlChange={setHtmlCode}
-            onCssChange={setCssCode}
-            onJsChange={setJsCode}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            prompt={prompt}
-          />
-        </section>
       </main>
       <footer className="home-footer">
         <p>© 2025 Oncomn. All rights reserved.</p>
         <a href="mailto:support@oncomn.com" className="footer-link">Contact Support</a>
       </footer>
-      <PromptTextarea onPromptChange={setPrompt} />
     </div>
   );
 };
