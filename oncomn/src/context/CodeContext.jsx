@@ -6,25 +6,20 @@ const initialCode = {
 <p>Describe the component you want to build in the prompt below.</p>`,
   css: `body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  background: #1e1e1e;
+  color: white;
+  font-family: sans-serif;
   text-align: center;
-  min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #f0f0f0;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 h1 {
-  font-size: 2.5rem;
   color: #8a5ff1;
-}
-p {
-  font-size: 1.2rem;
-  color: #a0a0a0;
-  margin-top: 1rem;
 }`,
-  js: `console.log("Welcome to Oncomn AI!");`,
-  reasoning: 'AI is ready. Describe the component you want to build in the prompt below.',
+  js: `console.log("Welcome to the Oncomn AI code generator!");`,
+  reasoning: 'AI is ready. Describe the component you want to build.',
 };
 
 export const CodeContext = createContext();
