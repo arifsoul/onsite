@@ -54,8 +54,13 @@ body {
   width: 100%;
   padding-top: 65px; 
   padding-bottom: 200px;
-  padding-left: 1rem; /* Reduced padding */
-  padding-right: 1rem; /* Reduced padding */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  
+  /* TAMBAHKAN baris ini untuk memusatkan konten di halaman Home */
+  max-width: 1400px; 
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* SEKSI KONTEN (Hero, Features, etc.) */
