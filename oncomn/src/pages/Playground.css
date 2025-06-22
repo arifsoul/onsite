@@ -4,28 +4,30 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
-  /* Override gaya dari file CSS lain yang mungkin menetapkan max-width */
-  max-width: none; 
+  width: 100%;
+  max-width: none;
   margin: 0;
   padding: 0;
   background: hsl(0, 0%, 9%);
+  overflow: hidden; /* Mencegah scroll di level body */
+}
+
+/* Tambahkan ini untuk memastikan header selalu di atas */
+.home-header {
+  position: relative; /* Atau 'fixed' jika Anda ingin header tetap di atas saat scroll */
+  z-index: 100;
 }
 
 .playground-main {
+  /* Ganti 'padding-top' menjadi 'margin-top' jika header-nya 'fixed' atau 'absolute'.
+     Jika header-nya 'relative' seperti di atas, maka tidak perlu margin/padding.
+     Namun, untuk keamanan, kita atur ulang saja layout flexbox-nya. */
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding: 0;
-  margin: 0;
-  padding-top: 65px; /* Sesuaikan dengan tinggi header */
   width: 100%;
-  height: calc(100% - 65px);
-}
-
-.playground-main .live-preview-wrapper {
-    /* Pastikan LivePreview mengisi area main */
-    width: 100%;
-    height: 100%;
-    margin-top: 0;
+  height: calc(100% - 65px); /* Sesuaikan tinggi dengan sisa viewport */
+  position: relative; /* Tetap pertahankan untuk positioning anak */
+  margin: 0;
+  padding: 0;
 }

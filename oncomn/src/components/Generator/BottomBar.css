@@ -1,0 +1,124 @@
+.bottom-bar-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 1rem 1.25rem 1rem;
+  z-index: 1000;
+  /* Efek gradien/shadow telah dihapus sesuai permintaan sebelumnya */
+  pointer-events: none;
+}
+
+.bottom-bar-container {
+  width: 100%;
+  max-width: 750px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: auto;
+}
+
+.control-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: rgba(45, 45, 50, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* Aturan untuk desktop: setiap grup memiliki porsi lebar yang sama untuk simetri */
+  flex: 1;
+}
+
+.control-group.left {
+  justify-content: center;
+}
+.control-group.center {
+  justify-content: center;
+}
+.control-group.right {
+  justify-content: center;
+}
+
+.control-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e0e0e0;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.control-button:hover:not([disabled]) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.control-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-button.view-button {
+  padding: 0.6rem;
+}
+
+.control-button.active {
+  background-color: #8a5ff1;
+  color: white;
+}
+
+/* --- PERUBAHAN UTAMA UNTUK MOBILE --- */
+@media (max-width: 640px) {
+  .bottom-bar-wrapper {
+    /* Beri sedikit lebih banyak ruang di sisi kiri dan kanan */
+    padding: 0.5rem 0.75rem 1rem 0.75rem;
+  }
+
+  .control-group {
+    /* PERUBAHAN KUNCI: Hapus 'flex: 1'.
+      Ini membuat lebar grup beradaptasi dengan kontennya (hanya ikon), 
+      bukan memaksakan sepertiga dari total lebar.
+    */
+    flex: initial;
+  }
+
+  /* Sembunyikan teks label untuk menghemat ruang */
+  .control-button span {
+    display: none;
+  }
+}
+
+/* Aturan tambahan untuk layar yang sangat sempit */
+@media (max-width: 380px) {
+  .control-bar {
+    padding: 0.4rem;
+  }
+  .control-group {
+    gap: 0.25rem;
+  }
+  .control-button {
+    padding: 0.5rem;
+  }
+  .control-button.view-button {
+    padding: 0.5rem;
+  }
+}
